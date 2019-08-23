@@ -1,8 +1,9 @@
 import { all, put, call, takeLatest } from 'redux-saga/effects';
-// import history from '../../../services/history';
+import { Alert } from 'react-native';
 import api from '~/services/api';
+import NavigationService from '~/services/navigation';
 
-import { signInSuccess } from './actions';
+import { signInSuccess, signFailure } from './actions';
 
 export function* signIn({ payload }) {
   const { email, password } = payload;
@@ -26,13 +27,23 @@ export function* signIn({ payload }) {
 }
 
 export function* signUp({ payload }) {
-  const { name, email, password } = payload;
+  try {
+    const { name, email, password } = payload;
+    yield call(api.post, 'users', {
+      name,
+      email,
+      password,
+    });
+    NavigationService.navigate('SignIn');
+    Alert.alert('Sucesso', 'Conta criada com sucesso. Você já pode logar');
+  } catch (error) {
+    Alert.alert(
+      'Falha na autenticação',
+      'Houve um erro no cadastro. Verifique seus dados'
+    );
+  }
+  yield put(signFailure());
 
-  yield call(api.post, 'users', {
-    name,
-    email,
-    password,
-  });
   // history.push('/');
 }
 

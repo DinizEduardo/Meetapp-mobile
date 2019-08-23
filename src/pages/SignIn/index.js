@@ -60,7 +60,7 @@ export default function SignIn({ navigation }) {
               navigation.navigate('SignUp');
             }}
           >
-            <SignText>Criar conta gratuita</SignText>
+            <SignText>Criar conta</SignText>
           </SignLink>
         </Form>
       </Container>
