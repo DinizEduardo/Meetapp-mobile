@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Keyboard } from 'react-native';
 import Header from '~/components/Header';
+import Background from '~/components/Background';
+
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import { signOut } from '~/store/modules/Auth/actions';
@@ -9,7 +11,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { LogoutButton } from './styles';
 
 import { Container, Form, FormInput, Separator, SubmitButton } from './styles';
-import Background from '~/components/Background';
 
 export default function Profile() {
   const user = useSelector(state => state.user.profile);
