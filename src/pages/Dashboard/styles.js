@@ -23,25 +23,25 @@ export const Meetup = styled.View`
 `;
 
 export const Title = styled.Text`
-  font-size: 24px;
+  font-size: 20px;
   color: #000;
   font-weight: bold;
 `;
 
 export const DateMeetup = styled.View`
-  margin-top: 7px;
+  margin-top: 9px;
   align-content: center;
   flex-direction: row;
 `;
 
 export const Location = styled.View`
-  margin-top: 7px;
+  margin-top: 9px;
   align-content: center;
   flex-direction: row;
 `;
 
 export const Organizer = styled.View`
-  margin-top: 7px;
+  margin-top: 9px;
   align-content: center;
   flex-direction: row;
 `;
