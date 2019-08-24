@@ -1,19 +1,47 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { Keyboard } from 'react-native';
 import Header from '~/components/Header';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import { signOut } from '~/store/modules/Auth/actions';
-import { useDispatch } from 'react-redux';
+import { updateProfileRequest } from '~/store/modules/user/actions';
+import { useDispatch, useSelector } from 'react-redux';
 import { LogoutButton } from './styles';
 
 import { Container, Form, FormInput, Separator, SubmitButton } from './styles';
 import Background from '~/components/Background';
 
 export default function Profile() {
+  const user = useSelector(state => state.user.profile);
+  const [name, setName] = useState(user.name);
+  const [email, setEmail] = useState(user.email);
+  const [oldPassword, setOldPassword] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
   const dispatch = useDispatch();
   function handleLogout() {
     dispatch(signOut());
   }
+
+  function handleSubmit() {
+    Keyboard.dismiss();
+    dispatch(
+      updateProfileRequest({
+        name,
+        email,
+        oldPassword,
+        password,
+        confirmPassword,
+      })
+    );
+  }
+
+  useEffect(() => {
+    setOldPassword('');
+    setPassword('');
+    setConfirmPassword('');
+  }, [user]);
 
   return (
     <Background>
@@ -25,20 +53,40 @@ export default function Profile() {
             autoCorrect={false}
             autoCapitalize="none"
             placeholder="Nome completo"
+            value={name}
+            onChangeText={setName}
           />
           <FormInput
             keyboardType="email-address"
             autoCorrect={false}
             autoCapitalize="none"
             placeholder="E-mail"
+            value={email}
+            onChangeText={setEmail}
           />
 
           <Separator />
 
-          <FormInput secureTextEntry placeholder="Senha atual" />
-          <FormInput secureTextEntry placeholder="Nova senha" />
-          <FormInput secureTextEntry placeholder="Confirmação de senha" />
-          <SubmitButton onPress={() => {}}>Salvar perfil</SubmitButton>
+          <FormInput
+            secureTextEntry
+            placeholder="Senha atual"
+            value={oldPassword}
+            onChangeText={setOldPassword}
+          />
+          <FormInput
+            secureTextEntry
+            placeholder="Nova senha"
+            value={password}
+            onChangeText={setPassword}
+          />
+          <FormInput
+            secureTextEntry
+            placeholder="Confirmação de senha"
+            value={confirmPassword}
+            returnKeyType="send"
+            onChangeText={setConfirmPassword}
+          />
+          <SubmitButton onPress={handleSubmit}>Salvar perfil</SubmitButton>
           <LogoutButton onPress={handleLogout}>Sair do Meetapp</LogoutButton>
         </Form>
       </Container>
