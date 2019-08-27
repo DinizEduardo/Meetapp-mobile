@@ -1,7 +1,13 @@
 import styled from 'styled-components/native';
 import Button from '~/components/Button';
 
-export const Container = styled.View``;
+export const Container = styled.View`
+  flex: 1;
+`;
+
+export const Meetups = styled.FlatList`
+  padding-bottom: 200px;
+`;
 
 export const DatePicker = styled.View`
   margin: 10px 0;
@@ -10,7 +16,7 @@ export const DatePicker = styled.View`
   flex-direction: row;
 `;
 
-export const Date = styled.Text`
+export const DateTitle = styled.Text`
   color: #fff;
   font-weight: bold;
   font-size: 22px;
@@ -53,6 +59,8 @@ export const SubscriptionButton = styled(Button)`
 export const Image = styled.Image`
   align-self: center;
   border-radius: 4px;
+  height: 150px;
+  width: 340px;
 `;
 
 export const Info = styled.View`
@@ -78,4 +86,20 @@ export const OrganizerText = styled.Text`
   margin-top: -3px;
   color: #999;
   margin-left: 4px;
+`;
+
+export const Box = styled.View`
+  background: #fff;
+  padding: 30px;
+  margin: 20px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+`;
+
+export const NoMettup = styled.Text`
+  color: #000;
+  font-weight: bold;
+  font-size: 18px;
+  text-align: center;
 `;
