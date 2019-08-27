@@ -33,8 +33,7 @@ import {
 } from './styles';
 import Header from '~/components/Header';
 import Background from '~/components/Background';
-import ImageMeetup from '~/assets/Teste.png';
-import { TouchableOpacity, ActivityIndicator } from 'react-native';
+import { TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import api from '~/services/api';
 
 export default function Dashboard() {
@@ -70,7 +69,16 @@ export default function Dashboard() {
     setDate(addDays(date, 1));
   }
 
-  function handleSubscribe() {}
+  async function handleSubscribe(id) {
+    const response = await api
+      .post(`/meetups/${id}/subscription`)
+      .then(Alert.alert('Sucesso', 'Você foi inscrito no meetup'))
+      .catch(function(error) {
+        if (error.response) {
+          Alert.alert('Falha ao se inscrever', error.response.data.error);
+        }
+      });
+  }
 
   return (
     <Background>
