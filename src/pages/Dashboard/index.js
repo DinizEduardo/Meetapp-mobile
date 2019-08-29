@@ -28,6 +28,7 @@ import {
   Location,
   Organizer,
   SubscriptionButton,
+  UnsubscriptionButton,
   Image,
   Info,
 } from './styles';
@@ -48,6 +49,7 @@ export default function Dashboard() {
     const response = await api.get('meetups', {
       params: { date, users: 0, page },
     });
+    // setMeetup([]);
     setMeetup(response.data);
     setLoading(false);
   }
@@ -70,7 +72,7 @@ export default function Dashboard() {
   }
 
   async function handleSubscribe(id) {
-    const response = await api
+    await api
       .post(`/meetups/${id}/subscription`)
       .then(Alert.alert('Sucesso', 'Você foi inscrito no meetup'))
       .catch(function(error) {
@@ -78,6 +80,19 @@ export default function Dashboard() {
           Alert.alert('Falha ao se inscrever', error.response.data.error);
         }
       });
+    loadMeetups();
+  }
+
+  async function handleUnsub(id) {
+    const response = await api
+      .delete(`/meetups/${id}/subscription`)
+      .then(Alert.alert('Sucesso', 'Você cancelou sua inscrição com sucesso'))
+      .catch(function(error) {
+        if (error.response) {
+          Alert.alert('Falha ao cancelar inscrição', error.response.data.error);
+        }
+      });
+    loadMeetups();
   }
 
   return (
@@ -107,11 +122,12 @@ export default function Dashboard() {
           </Box>
         ) : (
           <Meetups
-            onEndReachedThreshold={0.2} // Carrega mais itens quando chegar em 20% do fim
-            onEndReached={loadMeetups} // Função que carrega mais itens
-            // onRefresh={this.refreshList} // Função dispara quando o usuário arrasta a lista pra baixo
-            refreshing={true} // Variável que armazena um estado true/false que representa se a lista está atualizando
+            // onEndReachedThreshold={0.2} // Carrega mais itens quando chegar em 20% do fim
+            // onEndReached={loadMeetups} // Função que carrega mais itens
+            onRefresh={loadMeetups} // Função dispara quando o usuário arrasta a lista pra baixo
+            refreshing={false} // Variável que armazena um estado true/false que representa se a lista está atualizando
             data={meetup}
+            extraData={meetup}
             keyExtractor={star => String(star.id)}
             renderItem={({ item }) => (
               <Meetup>
@@ -147,7 +163,9 @@ export default function Dashboard() {
                       Realizar inscrição
                     </SubscriptionButton>
                   ) : (
-                    <SubscriptionButton>Cancelar inscrição</SubscriptionButton>
+                    <UnsubscriptionButton onPress={() => handleUnsub(item.id)}>
+                      Cancelar inscrição
+                    </UnsubscriptionButton>
                   )}
                 </Info>
               </Meetup>
