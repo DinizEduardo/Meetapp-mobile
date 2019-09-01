@@ -1,16 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {
-  format,
-  subDays,
-  addDays,
-  setHours,
-  setMinutes,
-  setSeconds,
-  isBefore,
-  isEqual,
-  parseISO,
-} from 'date-fns';
+import { format, subDays, addDays, parseISO } from 'date-fns';
 import pt from 'date-fns/locale/pt';
 import {
   Container,
@@ -52,6 +42,19 @@ export default function Dashboard() {
     // setMeetup([]);
     setMeetup(response.data);
     setLoading(false);
+  }
+
+  async function loadMore() {
+    const nextPage = page + 1;
+
+    const response = await api.get('meetups', {
+      params: { date, users: 0, page: nextPage },
+    });
+    const data = response.data;
+    if (data.length > 0) {
+      setMeetup([...meetup, ...data]);
+    }
+    setPage(nextPage);
   }
 
   useEffect(() => {
@@ -122,13 +125,13 @@ export default function Dashboard() {
           </Box>
         ) : (
           <Meetups
-            // onEndReachedThreshold={0.2} // Carrega mais itens quando chegar em 20% do fim
-            // onEndReached={loadMeetups} // Função que carrega mais itens
+            onEndReachedThreshold={0.2} // Carrega mais itens quando chegar em 20% do fim
+            onEndReached={loadMore} // Função que carrega mais itens
             onRefresh={loadMeetups} // Função dispara quando o usuário arrasta a lista pra baixo
             refreshing={false} // Variável que armazena um estado true/false que representa se a lista está atualizando
             data={meetup}
             extraData={meetup}
-            keyExtractor={star => String(star.id)}
+            keyExtractor={m => String(m.id)}
             renderItem={({ item }) => (
               <Meetup>
                 <Image

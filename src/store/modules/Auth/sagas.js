@@ -6,22 +6,26 @@ import NavigationService from '~/services/navigation';
 import { signInSuccess, signFailure } from './actions';
 
 export function* signIn({ payload }) {
-  const { email, password } = payload;
+  try {
+    const { email, password } = payload;
 
-  const response = yield call(api.post, 'login', {
-    email,
-    password,
-  });
-  const { token, user } = response.data;
+    const response = yield call(api.post, 'login', {
+      email,
+      password,
+    });
+    const { token, user } = response.data;
 
-  if (!user) {
-    console.tron.log('usuario invalido');
-    return;
+    if (!user) {
+      Alert.alert('Erro', 'Login invalido');
+      return;
+    }
+
+    api.defaults.headers.Authorization = `Bearer ${token}`;
+
+    yield put(signInSuccess(token, user));
+  } catch (error) {
+    Alert.alert('Erro', 'Login invalido');
   }
-
-  api.defaults.headers.Authorization = `Bearer ${token}`;
-
-  yield put(signInSuccess(token, user));
 
   // history.push('/dashboard');
 }

@@ -37,12 +37,29 @@ export default function Subscription() {
     setLoading(false);
   }
 
+  async function loadMoreMeetups() {
+    setLoading(true);
+
+    const nextPage = page + 1;
+    const response = await api.get('/meetups/subscription', {
+      params: {
+        page: nextPage,
+      },
+    });
+    const data = response.data;
+    if (data.length > 0) {
+      setMeetup([...meetup, ...data]);
+    }
+    setPage(nextPage);
+    setLoading(false);
+  }
+
   useEffect(() => {
     loadMeetups();
   }, []);
 
   async function handleUnsub(id) {
-    const response = await api
+    await api
       .delete(`/meetups/${id}/subscription`)
       .then(Alert.alert('Sucesso', 'Você cancelou sua inscrição com sucesso'))
       .catch(function(error) {
@@ -66,21 +83,20 @@ export default function Subscription() {
 
         <Meetups
           onEndReachedThreshold={0.2} // Carrega mais itens quando chegar em 20% do fim
-          onEndReached={loadMeetups} // Função que carrega mais itens
+          onEndReached={loadMoreMeetups} // Função que carrega mais itens
           onRefresh={loadMeetups} // Função dispara quando o usuário arrasta a lista pra baixo
-          refreshing={false} // Variável que armazena um estado true/false que representa se a lista está atualizando
+          refreshing={false}
           data={meetup}
-          extradata={meetup}
-          keyExtractor={star => String(star.id)}
+          keyExtractor={item => String(item.Meetup.id)}
           renderItem={({ item }) => (
-            <Meetup>
+            <Meetup key={item.Meetup.id}>
               <Image
                 source={{
                   uri: item.Meetup.File.url,
                 }}
               />
               <Info>
-                <Title>{item.title}</Title>
+                <Title>{item.Meetup.title}</Title>
                 <DateMeetup>
                   <Icon name="event" size={16} color="#999" />
                   <DateText>
@@ -99,7 +115,9 @@ export default function Subscription() {
                 </Location>
                 <Organizer>
                   <Icon name="person" size={16} color="#999" />
-                  <OrganizerText>Organizador: {item.User.name}</OrganizerText>
+                  <OrganizerText>
+                    Organizador: {item.Meetup.User.name}
+                  </OrganizerText>
                 </Organizer>
 
                 <UnsubscriptionButton
